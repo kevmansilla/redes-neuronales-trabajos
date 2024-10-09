@@ -1,9 +1,5 @@
 %% ****** Start of file apstemplate.tex ****** %
-
-%\documentclass[aps,prl,preprint,groupedaddress]{revtex4-2}
-\documentclass[aps,prl,twocolumn,groupedaddress]{revtex4-2}
-%\documentclass[aps,prl,preprint,superscriptaddress]{revtex4-2}
-%\documentclass[aps,prl,reprint,groupedaddress]{revtex4-2}
+\documentclass[aps,prl,reprint,groupedaddress]{revtex4-2}
 
 % You should use BibTeX and apsrev.bst for references
 % Choosing a journal automatically selects the correct APS
@@ -13,119 +9,65 @@
 
 \usepackage{graphicx}
 \usepackage{epstopdf}
-%\usepackage{amsmath}% http://ctan.org/pkg/amsmath
-%\usepackage{amsthm}
-%\usepackage{amsfonts}
-%\usepackage{subfigure}
-%\usepackage{hhline}
-%\usepackage[miktex]{gnuplottex}
-%\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{subfigure}
+\usepackage{hhline}
+\usepackage[left=1.3cm,right=1.3cm,top=1.3cm,bottom=1.3cm]{geometry}
+\usepackage[miktex]{gnuplottex}
+\usepackage{xcolor}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{color}
 \usepackage{hyperref}
-%\usepackage[percent]{overpic}
+\usepackage[percent]{overpic}
 \usepackage{tikz}
 \usepackage{mathrsfs}
 \usepackage{wasysym}
 \usepackage{tikz-cd}
-%\usepackage{stix} %\fisheye
+\usepackage{caption}  % Elimina hypcap=true si está presente
 \usepackage{stackengine,scalerel}
 
 % so sections, subsections, etc. become numerated.
 \setcounter{secnumdepth}{3}
 
-% Comandos proprios
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-\newcommand{\avrg}[1]{\left\langle #1 \right\rangle}
-\newcommand{\nelta}{\bar{\delta}}
-\newcommand{\bra}[1]{\left\langle #1\right|}
-\newcommand{\ket}[1]{\left| #1 \right\rangle}
-\newcommand{\sbra}[1]{\langle #1|}
-\newcommand{\sket}[1]{| #1 \rangle}
-\newcommand{\bek}[3]{\left\langle #1 \right| #2 \left| #3 \right\rangle}
-\newcommand{\sbek}[3]{\langle #1 | #2 | #3 \rangle}
-\newcommand{\braket}[2]{\left\langle #1 \middle| #2 \right\rangle}
-\newcommand{\ketbra}[2]{\left| #1 \middle\rangle \middle\langle #2  \right|}
-\newcommand{\sbraket}[2]{\langle #1 | #2 \rangle}
-\newcommand{\sketbra}[2]{| #1 \rangle  \langle #2 |}
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\newcommand{\snorm}[1]{\lVert#1\rVert}
-\newcommand{\bvec}[1]{\boldsymbol{\mathsf{#1}}}
-\newcommand{\bcov}[1]{\boldsymbol{#1}}
-\newcommand{\bdua}[1]{\boldsymbol{\check{#1}}}
-%\newcommand{\bdov}[1]{\boldsymbol{\breve{#1}}}
-\newcommand{\bdov}[1]{\breve{#1}}
-%\newcommand{\bten}[1]{\boldsymbol{\mathfrak{#1}}}
-\newcommand{\bten}[1]{\boldsymbol{\mathfrak{#1}}}
-\newcommand{\forany}{\tilde{\forall}}
-\newcommand{\qed}{$\overset{\circ}{.}\;$}
+\newenvironment{Figura}
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
 
-\newcommand\bigeye{\ensurestackMath{\stackinset{c}{}{c}{-.3pt}%
-  {\bullet}{\scriptstyle\bigcirc}}}
-\newcommand\eye{\scalerel*{\bigeye}{x}}
-%\newcommand*{\fisheye}{%
-%    \mathbin{%
-%        \ooalign{$\circledcirc$\cr\hidewidth$\bullet$\hidewidth}%
-%    }%
-%}
 \renewcommand{\appendixname}{Apéndice} % Change "Appendix" to "Apéndice"
 
 \begin{document}
 
-% Use the \preprint command to place your local institutional report
-% number in the upper righthand corner of the title page in preprint mode.
-% Multiple \preprint commands are allowed.
-% Use the 'preprintnumbers' class option to override journal defaults
-% to display numbers if necessary
-%\preprint{}
-
 %Title of paper
 \title{
-Una red neuronal con una neurona
+Análisis Numérico del modelo de Hodgkin-Huxley
 }
 
-% repeat the \author .. \affiliation  etc. as needed
-% \email, \thanks, \homepage, \altaffiliation all apply to the current
-% author. Explanatory text should go in the []'s, actual e-mail
-% address or url should go in the {}'s for \email and \homepage.
-% Please use the appropriate macro foreach each type of information
+% autores
+\author{Mauricio Morán}
+\email[]{maurijmoran@gmail.com}
+\affiliation{}
 
-% \affiliation command applies to all authors since the last
-% \affiliation command. The \affiliation command should follow the
-% other information
-% \affiliation can be followed by \email, \homepage, \thanks as well.
-\author{Juan I. Perotti}
-\email[]{juan.perotti@unc.edu.ar}
-%\homepage[]{Your web page}
-%\thanks{}
-%\altaffiliation{}
-%\affiliation{}
-\affiliation{Instituto de F\'isica Enrique Gaviola (IFEG-CONICET), Ciudad Universitaria, 5000 C\'ordoba, Argentina}
-\affiliation{Facultad de Matem\'atica, Astronom\'ia, F\'isica y Computaci\'on, Universidad Nacional de C\'ordoba, Ciudad Universitaria, 5000 C\'ordoba, Argentina}
+\author{Kevin Gaston Mansilla}
+\email[]{kevin.mansilla@mi.unc.edu.ar}
 
-\author{Benjamín Marcolongo}
-\email[]{benjaminmarcolongo@unc.edu.ar}
-\affiliation{Instituto de F\'isica Enrique Gaviola (IFEG-CONICET), Ciudad Universitaria, 5000 C\'ordoba, Argentina}
-\affiliation{Facultad de Matem\'atica, Astronom\'ia, F\'isica y Computaci\'on, Universidad Nacional de C\'ordoba, Ciudad Universitaria, 5000 C\'ordoba, Argentina}
+\author{Bruno Principi}
+\email[]{principi.bruno@gmail.com}
+\affiliation{}
 
-\author{Martín Abrudsky}
-\email[]{martin.abrudsky@unc.edu.ar}
-\affiliation{Instituto de F\'isica Enrique Gaviola (IFEG-CONICET), Ciudad Universitaria, 5000 C\'ordoba, Argentina}
-\affiliation{Facultad de Matem\'atica, Astronom\'ia, F\'isica y Computaci\'on, Universidad Nacional de C\'ordoba, Ciudad Universitaria, 5000 C\'ordoba, Argentina}
-
-%Collaboration name if desired (requires use of superscriptaddress
-%option in \documentclass). \noaffiliation is required (may also be
-%used with the \author command).
-%\collaboration can be followed by \email, \homepage, \thanks as well.
-%\collaboration{Juan Perez}
-%\noaffiliation
-
+%fecha
 \date{\today}
 
 \begin{abstract}
-En este trabajo, bla bla bla...
+En este trabajo se estudia el modelo de Hodgkin-Huxley, que describe la
+transmisión del potencial de acción en células excitables. Con el objetivo de 
+comprender el compotamiento del mismo, primero se explicará brevemente 
+el funcionamiento de una neurona y la transmisión del potencial de acción. Para 
+luego, presentar el modelo matemático propuesto por Hodgkin y Huxley y resolverlo
+mediante el método numérico de Runge-Kutta de cuarto orden. Finalmente, se
+analizarán los resultados obtenidos.
 \end{abstract}
 
 % insert suggested keywords - APS authors don't need to do this
@@ -136,181 +78,176 @@ En este trabajo, bla bla bla...
 
 \section{Introducción}
 
-Las redes neuronales... bla bla bla~\cite{hertz1999introduction}.
+Una neurona es una unidad funcional básica del sistema nervioso y su función
+principal es recibir estímulos y transmitirlos a otras células. Las dendritas 
+reciben señales químicas de otras neuronas que convierten en señales eléctricas 
+y las transmiten al cono axónico, y en caso que el estimulo supere un umbral, 
+en esa zona se desencadena el potencial de acción, que es conducido a lo largo
+del axón hasta las terminaciones nerviosas. 
 
-\section{Teoría}
+Diversos estudios anteriores a los experimentos de Hodgkin y Huxley ya habían 
+mostrado que la transmisión del impulso nervioso estaba relacionada con el 
+movimiento de partículas cargadas, iones, a través de la membrana celular. 
+Sin embargo, fueron ellos los que determinaron las leyes que gobiernan este 
+movimiento iónico y, en última instancia, las formalizaron en 
+términos matemáticos. 
 
-Bla bla...
+Realizaron sus experimentos con el axón de calamar gigante, y lograron mostrar 
+que las corrientes iónicas a través de la membrana neuronal son las responsables 
+de la transmisión del impulso nervioso. Además, observaron 
+que el comportamiento de la membrana celular puede ser descrito en
+términos de un circuito eléctrico.
+
+En una célula, las especies iónicas más frecuentes son el ion sodio ($Na^{+}$), 
+el ion potasio ($K^{+}$) y, en menor medida, aniones orgánicos. El movimiento 
+de estos iones a través de la membrana celular es la base del inicio y 
+propagación del potencial de acción, pero este movimiento no es arbitrario, 
+sino que obedece a las características estructurales de la membrana celular.
+
+La membrana celular es una barrera formada por lípidos y proteínas que regula 
+el paso de sustancias entre el interior y el exterior de la célula. Solo 
+permite el paso de moléculas pequeñas y sin carga, mientras que iones y 
+otras moléculas necesitan canales y bombas iónicas para atravesarla. 
+
+Las diferentes concentraciones de los iones dentro y fuera de la célula 
+determinan que exista una diferencia de potencial entre el interior y el exterior 
+velular que se denomina potencial de membrana. En ausencia de un estímulo nervioso, 
+es decir, en una neurona en reposo, el medio extracelular es rico en $Na^{+}$, 
+mientras que en el medio intracelular se encuentran altas concentraciones de
+$K^{+}$ y aniones orgánicos. Esta distribución distribución asimétrica genera 
+una diferencia de cargas de alrededor de $-70mV$, y se lo conoce como 
+potencial de membrana en reposo. 
+
+En reposo, está polarizada, con el interior más negativo que el exterior. 
+Si la membrana se despolariza lo suficiente, se genera un potencial de acción, 
+que constituye la forma de transmisión de un estímulo nervioso y se desencadena 
+como respuesta a una despolariza de la membrana celular que provoca que el 
+potencial de membrana alcance un umbral de voltaje aproximadamente de $-55mV$. 
+En este sentido, el potencial de acción responde, de acuerdo a Hodgkin y Huxley, 
+a la ley del todo o nada: si el estímulo eléctrico no es suficiente para que 
+el potencial de membrana rebase el umbral, la respuesta no se genera y, 
+si llega al umbral, el potencial de acción se desarrolla completamente. 
+De esta forma, siempre que se supere el umbral, la amplitud y duración del 
+potencial de acción es la misma, independientemente de la magnitud del 
+estímulo aplicado.
+
+Por otra parte, si la magnitud del estímulo es lo suﬁcientemente grande, en 
+lugar de un único potencial de acción puede producirse una secuencia de varios 
+potenciales de acción (disparos neuronales) separados por períodos de inactividad. 
+Así, aunque la intensidad del estímulo no afecta a la forma y velocidad del 
+potencial de acción, produce un aumento proporcional de la frecuencia de 
+disparos neuronales. De esta manera, el sistema nervioso utiliza la frecuencia 
+de los impulsos para codiﬁcar la intensidad del estímulo.
+
+En la figura \ref{fig-potencial} podemos ver como se comporta el potencial de 
+membrana. En 1 un estimulo eléctrivo despolariza la membrana al alcanzar el 
+umbral de voltaje, esto provoca que en 2 la apertura de canales de socio, 
+permitiendo la entrada de iones $Na^{+}$ lo cual aumenta la carga en el 
+interior de la célula. En 3, la apertura de canales de potasio permite 
+la salida de iones $K^{+}$. En 4 la despolarización continua hasta llegar a un 
+momento en el que se cierran los canales de sodio y comienza la repolarización.
+
+Luego en 5 durante la repolarización, los canales de potasio permanecen abiertos, 
+lo que reduce la carga positiva en el interior y hace que el potencial de 
+membrana disminuya. En 6 la repolarización continua hasta alcanzar el potencial 
+de equilibrio resultando en un hiperpolarización de la membrana. Finalmente en 7
+la bomba de sodio-potasio restablece el potencial de membrana en reposo.
+
+Durante la transmisión de un potencial de acción, existe un intervalo de tiempo 
+conocido comoperíodo refractario, en el cual los canales regulados por voltaje 
+aún no hanrecobrado su estado original y la neurona no responde de la misma 
+forma a un estímulo
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.9\textwidth]{figs/fases_potencial.png}
+    \captionof{figure}{Fases del potencial de membrana}
+    \label{fig-potencial}
+\end{Figura}
+
+\section{Modelo Matemático}
+
+La siguiente ecuación describe la evolución temporal del potencial de membrana
+\begin{align*}
+    C_m \frac{dV}{dt} = &\underbrace{I(x,t)}_{\text{corriente externa}} - \underbrace{g_{Na}(V_{m} - E_{Na})}_{\text{Corriente $Na^{+}$}}  \\
+    &- \underbrace{g_{K}(V_{m} - E_{K})}_{\text{Corriente $K^{+}$}} - \underbrace{g_{L}(V_{m} - E_{L})}_{\text{corriente de fuga}}
+\end{align*}
+
+donde $C_{m}$ es la capacitancia de la membrana, $\frac{dV}{dt}$ es el potencial 
+de membrana en el tiempo $t$, $I(x,t)$ es la corriente externa. $V_{m}$ es el
+potencial de membrana en reposo. Las conductancias de los caneles de sodio, 
+potasio y de fuga están representadas por $g_{Na}$, $g_{K}$ y $g_{L}$ mientras 
+que los potenciales de equilibrio para estos mismos iones son $E_{Na}$, $E_{K}$ 
+y $E_{L}$.
+
+Ademas Hodgkin y Huxley postularon que las conductancion del sodio y del potasio 
+dependían del tiempo y del potencial de membrana. Por lo que introdujeron variables 
+adimensionales $m$, $n$ y $h$ que describen la probabilidad de que los canales de
+sodio y potasio estén abiertos o cerrados. Estas variables evolucionan de acuerdo a
+las siguientes ecuaciones diferenciales
+\begin{align*}
+    \frac{dm}{dt} &= \alpha_{m}(V)(1 - m) - \beta_{m}(V)m \\
+    \frac{dn}{dt} &= \alpha_{n}(V)(1 - n) - \beta_{n}(V)n \\
+    \frac{dh}{dt} &= \alpha_{h}(V)(1 - h) - \beta_{h}(V)h
+\end{align*}
+
+donde $\alpha_{k}$ y $\beta_{k}$ con $k \in \{m, n, h\}$ son constantes de velocidad 
+de cambio de canales abiertos a cerrados y de cerrados a abiertos, respectivamente. 
+
+Entonces el modelo completo es:
+\begin{align*}
+    C_{m} \frac{dV_{m}}{dt} = &I(x,t) - g_{Na}m^{3}(V_{m} - E_{Na})  \\
+    &- g_{K}n^{4}(V_{m} - E_{K}) - g_{L}(V_{m} - E_{L}) \\
+\end{align*}
+
+\newpage
+donde 
+\begin{align*}
+    \frac{dm}{dt} &= \alpha_{m}(V)(1 - m) - \beta_{m}(V)m \\
+    \frac{dn}{dt} &= \alpha_{n}(V)(1 - n) - \beta_{n}(V)n \\
+    \frac{dh}{dt} &= \alpha_{h}(V)(1 - h) - \beta_{h}(V)h
+\end{align*}
+
+con 
+\begin{align*}
+    \alpha_{m}(V) &= \frac{0.1(25 - V)}{\exp\left(-\frac{25-V}{10}\right)-1} \\
+    \beta_{m}(V) &= 4\exp\left(-\frac{V}{18}\right) \\
+    \alpha_{n}(V) &= \frac{0.01(10 - V)}{\exp\left(\frac{10-V}{10}\right)-1} \\
+    \beta_{n}(V) &= 0.125\exp\left(-\frac{V}{80}\right) \\
+    \alpha_{h}(V) &= 0.07\exp\left(-\frac{V}{20}\right) \\
+    \beta_{h}(V) &= \frac{1}{1 + \exp\left(-\frac{30-V}{10}\right)}
+\end{align*}
+
+y los valores de los parámetros obtenidos experimentalmente son:
+\begin{align*}
+    C_{m} &= 1 \mu F/cm^{2} \\
+    g_{Na} &= 120 mS/cm^{2} \\
+    g_{K} &= 36 mS/cm^{2} \\
+    g_{L} &= 0.3 mS/cm^{2} \\
+    E_{Na} &= 120 mV \\
+    E_{K} &= -12 mV \\
+    E_{L} &= -10.6 mV \\
+    i(t) &= 10 \mu A/cm^{2}\\
+    t &= 5 ms
+\end{align*}
+
+Nosotros resolveremos este sistema de ecuaciones mediante el método numérico de
+Runge-Kutta de cuarto orden y analizaremos los resultados obtenidos en la
+siguiente sección.
 
 \section{Resultados}
 
-Ver fig.~\ref{fig1}.
-
-\begin{figure*}
-\includegraphics*[scale=.4]{figs/fig1.png}
-\includegraphics*[scale=.4]{figs/fig1.png}
-\put(-483,140){\bf a)}
-\put(-240,140){\bf b)}
-\\
-\includegraphics*[scale=.4]{figs/fig1.png}
-\includegraphics*[scale=.4]{figs/fig1.png}
-\put(-483,140){\bf c)}
-\put(-240,140){\bf d)}
-%\vspace{-0.25cm}
-\caption{
-\label{fig1}
-Un puñado de distribuciones Gaussianas.
-{\bf a)} 
-Una distribución Gaussiana.
-{\bf b)} 
-Otra distribución Gaussiana.
-{\bf c)} 
-Otra distribución Gaussiana más.
-{\bf d)} 
-Una distribución Gaussiana extra.
-}
-\end{figure*}
-
-\section{Discusión}
-
-La comparación de ... bla bla bla
 
 \section{Conclusiones}
 
-Concluyendo ...
 
-% If in two-column mode, this environment will change to single-column
-% format so that long equations can be displayed. Use
-% sparingly.
-%\begin{widetext}
-% put long equation here
-%\end{widetext}
-
-% figures should be put into the text as floats.
-% Use the graphics or graphicx packages (distributed with LaTeX2e)
-% and the \includegraphics macro defined in those packages.
-% See the LaTeX Graphics Companion by Michel Goosens, Sebastian Rahtz,
-% and Frank Mittelbach for instance.
-%
-% Here is an example of the general form of a figure:
-% Fill in the caption in the braces of the \caption{} command. Put the label
-% that you will use with \ref{} command in the braces of the \label{} command.
-% Use the figure* environment if the figure should span across the
-% entire page. There is no need to do explicit centering.
-
-% \begin{figure}
-% \includegraphics{}%
-% \caption{\label{}}
-% \end{figure}
-
-% Surround figure environment with turnpage environment for landscape
-% figure
-% \begin{turnpage}
-% \begin{figure}
-% \includegraphics{}%
-% \caption{\label{}}
-% \end{figure}
-% \end{turnpage}
-
-% tables should appear as floats within the text
-%
-% Here is an example of the general form of a table:
-% Fill in the caption in the braces of the \caption{} command. Put the label
-% that you will use with \ref{} command in the braces of the \label{} command.
-% Insert the column specifiers (l, r, c, d, etc.) in the empty braces of the
-% \begin{tabular}{} command.
-% The ruledtabular enviroment adds doubled rules to table and sets a
-% reasonable default table settings.
-% Use the table* environment to get a full-width table in two-column
-% Add \usepackage{longtable} and the longtable (or longtable*}
-% environment for nicely formatted long tables. Or use the the [H]
-% placement option to break a long table (with less control than 
-% in longtable).
-% \begin{table}%[H] add [H] placement to break table across pages
-% \caption{\label{}}
-% \begin{ruledtabular}
-% \begin{tabular}{}
-% Lines of table here ending with \\
-% \end{tabular}
-% \end{ruledtabular}
-% \end{table}
-
-% Surround table environment with turnpage environment for landscape
-% table
-% \begin{turnpage}
-% \begin{table}
-% \caption{\label{}}
-% \begin{ruledtabular}
-% \begin{tabular}{}
-% \end{tabular}
-% \end{ruledtabular}
-% \end{table}
-% \end{turnpage}
-
-%\section{Aknowledgments}
-\section{Agradecimientos}
-
-\begin{acknowledgments}
-JIP agradece el finaciamiento de CONICET y la UNC.
-\end{acknowledgments}
 % Create the reference section using BibTeX:
 \bibliography{ref}
 
 % Specify following sections are appendices. Use \appendix* if there
 % only one appendix.
 
-\onecolumngrid
+%\onecolumngrid
 
-\appendix
-
-\section{Modelos}
-
-\subsection{Modelo 1}
-
-El código bla bla bla...
-
-\begin{verbatim}
-## Definimos el primer modelo
-class MultiLayerPerceptron(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-        ## "Achatamos" la matriz de 28x28 píxeles, 
-        ## transformandola en un vector de 784 elementos
-        self.flatten = nn.Flatten()
-
-        ## Definimos el perceptrón multicapa con las
-        ## siguientes capas:
-        ##
-        ## Entrada:        784 neuronas
-        ## 1º capa oculta: 512 neuronas
-        ## 2º capa oculta: 512 neuronas
-        ## Salida:         10  neuronas
-        ##
-        ## Entre capa y capa, utilizamos función de 
-        ## activación ReLU
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28*28, 600),
-            nn.ReLU(),
-            nn.Linear(600, 120),
-            nn.ReLU(),
-            nn.Linear(120, 10),
-            nn.ReLU()
-        )
-
-    def forward(self, x):
-        x = self.flatten(x)
-        x = self.linear_relu_stack(x)
-        return x
-\end{verbatim}
-
-\subsection{Modelo 2}
-
-El código bla bla bla...
-
-\section{Datos}
-
-Bla bla bla...
 
 \end{document}
 %
