@@ -7,3 +7,4 @@ tpNotes.bib
 *.blg
 *.fdb_latexmk
 *.fls
+/biblio
