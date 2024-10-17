@@ -5,7 +5,7 @@
 % Choosing a journal automatically selects the correct APS
 % BibTeX style file (bst file), so only uncomment the line
 % below if necessary.
-%\bibliographystyle{apsrev4-2}
+% \bibliographystyle{apsrev4-2}
 
 \usepackage{graphicx}
 \usepackage{epstopdf}
@@ -14,7 +14,7 @@
 \usepackage{amsfonts}
 \usepackage{subfigure}
 \usepackage{hhline}
-\usepackage[left=1.3cm,right=1.3cm,top=1.3cm,bottom=1.3cm]{geometry}
+\usepackage[left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
 \usepackage[miktex]{gnuplottex}
 \usepackage{xcolor}
 \usepackage{amssymb}
@@ -28,6 +28,10 @@
 \usepackage{tikz-cd}
 \usepackage{caption}  % Elimina hypcap=true si está presente
 \usepackage{stackengine,scalerel}
+
+\usepackage{caption}
+\captionsetup{skip=0pt}  % Reduce el espacio entre la imagen y su caption
+\raggedbottom
 
 % so sections, subsections, etc. become numerated.
 \setcounter{secnumdepth}{3}
@@ -61,13 +65,15 @@ Análisis Numérico del modelo de Hodgkin-Huxley
 \date{\today}
 
 \begin{abstract}
-En este trabajo se estudia el modelo de Hodgkin-Huxley, que describe la
-transmisión del potencial de acción en células excitables. Con el objetivo de 
-comprender el compotamiento del mismo, primero se explicará brevemente 
-el funcionamiento de una neurona y la transmisión del potencial de acción. Para 
-luego, presentar el modelo matemático propuesto por Hodgkin y Huxley y resolverlo
-mediante el método numérico de Runge-Kutta de cuarto orden. Finalmente, se
-analizarán los resultados obtenidos.
+En este trabajo se estudia el comportamiento del voltaje de una membrana celular
+simulada mediante el modelo de Hodgkin-Huxley bajo varias situaciones, como 
+lo son un estumulo débil y furete, una ráfaga, un período reflectario y 
+exitaciones espontaneas en respuesta al ruido. El sistema de ecuaciones del 
+modelo fue resuelto mediante el método de Runge-Kutta de orden cuatro, excepto 
+en el último caso que mencionamos, en el cual se utilizó el método de Euler ya 
+que cuando se integran procesos estocasticos las tecnicas cambian. Los 
+resultados obtenidos concuerdan con lo esperado teóricamente y se 
+discuten en la sección de resultados.
 \end{abstract}
 
 % insert suggested keywords - APS authors don't need to do this
@@ -78,106 +84,69 @@ analizarán los resultados obtenidos.
 
 \section{Introducción}
 
-Una neurona es una unidad funcional básica del sistema nervioso y su función
-principal es recibir estímulos y transmitirlos a otras células. Las dendritas 
-reciben señales químicas de otras neuronas que convierten en señales eléctricas 
-y las transmiten al cono axónico, y en caso que el estimulo supere un umbral, 
-en esa zona se desencadena el potencial de acción, que es conducido a lo largo
-del axón hasta las terminaciones nerviosas. 
+El modelo de Hodgkin-Huxley busca describir el potencial sobre una membrana 
+celular previo, durante y después de un potencial de acción. Para ello se encarga 
+de caracterizar, el voltaje $V_{m}$ de la membrana en función del tiempo $t$ y 
+de parámetros como el número y tipo de bombas de sodio-potasion que permiten 
+el paso de iones positivos (Na$^{+}$ y K$^{+}$) desde o hacia la parte interna 
+de la célula. Lo cual genera un despolarizacion que desemboca, si se supera 
+un cierto umbral en $v_{m}$, en la creación de un potencial de acción el cual 
+se muestra a continuación
 
-Diversos estudios anteriores a los experimentos de Hodgkin y Huxley ya habían 
-mostrado que la transmisión del impulso nervioso estaba relacionada con el 
-movimiento de partículas cargadas, iones, a través de la membrana celular. 
-Sin embargo, fueron ellos los que determinaron las leyes que gobiernan este 
-movimiento iónico y, en última instancia, las formalizaron en 
-términos matemáticos. 
-
-Realizaron sus experimentos con el axón de calamar gigante, y lograron mostrar 
-que las corrientes iónicas a través de la membrana neuronal son las responsables 
-de la transmisión del impulso nervioso. Además, observaron 
-que el comportamiento de la membrana celular puede ser descrito en
-términos de un circuito eléctrico.
-
-En una célula, las especies iónicas más frecuentes son el ion sodio ($Na^{+}$), 
-el ion potasio ($K^{+}$) y, en menor medida, aniones orgánicos. El movimiento 
-de estos iones a través de la membrana celular es la base del inicio y 
-propagación del potencial de acción, pero este movimiento no es arbitrario, 
-sino que obedece a las características estructurales de la membrana celular.
-
-La membrana celular es una barrera formada por lípidos y proteínas que regula 
-el paso de sustancias entre el interior y el exterior de la célula. Solo 
-permite el paso de moléculas pequeñas y sin carga, mientras que iones y 
-otras moléculas necesitan canales y bombas iónicas para atravesarla. 
-
-Las diferentes concentraciones de los iones dentro y fuera de la célula 
-determinan que exista una diferencia de potencial entre el interior y el exterior 
-velular que se denomina potencial de membrana. En ausencia de un estímulo nervioso, 
-es decir, en una neurona en reposo, el medio extracelular es rico en $Na^{+}$, 
-mientras que en el medio intracelular se encuentran altas concentraciones de
-$K^{+}$ y aniones orgánicos. Esta distribución distribución asimétrica genera 
-una diferencia de cargas de alrededor de $-70mV$, y se lo conoce como 
-potencial de membrana en reposo. 
-
-En reposo, está polarizada, con el interior más negativo que el exterior. 
-Si la membrana se despolariza lo suficiente, se genera un potencial de acción, 
-que constituye la forma de transmisión de un estímulo nervioso y se desencadena 
-como respuesta a una despolariza de la membrana celular que provoca que el 
-potencial de membrana alcance un umbral de voltaje aproximadamente de $-55mV$. 
-En este sentido, el potencial de acción responde, de acuerdo a Hodgkin y Huxley, 
-a la ley del todo o nada: si el estímulo eléctrico no es suficiente para que 
-el potencial de membrana rebase el umbral, la respuesta no se genera y, 
-si llega al umbral, el potencial de acción se desarrolla completamente. 
-De esta forma, siempre que se supere el umbral, la amplitud y duración del 
-potencial de acción es la misma, independientemente de la magnitud del 
-estímulo aplicado.
-
-Por otra parte, si la magnitud del estímulo es lo suﬁcientemente grande, en 
-lugar de un único potencial de acción puede producirse una secuencia de varios 
-potenciales de acción (disparos neuronales) separados por períodos de inactividad. 
-Así, aunque la intensidad del estímulo no afecta a la forma y velocidad del 
-potencial de acción, produce un aumento proporcional de la frecuencia de 
-disparos neuronales. De esta manera, el sistema nervioso utiliza la frecuencia 
-de los impulsos para codiﬁcar la intensidad del estímulo.
-
-En la figura \ref{fig-potencial} podemos ver como se comporta el potencial de 
-membrana. En 1 un estimulo eléctrivo despolariza la membrana al alcanzar el 
-umbral de voltaje, esto provoca que en 2 la apertura de canales de socio, 
-permitiendo la entrada de iones $Na^{+}$ lo cual aumenta la carga en el 
-interior de la célula. En 3, la apertura de canales de potasio permite 
-la salida de iones $K^{+}$. En 4 la despolarización continua hasta llegar a un 
-momento en el que se cierran los canales de sodio y comienza la repolarización.
-
-Luego en 5 durante la repolarización, los canales de potasio permanecen abiertos, 
-lo que reduce la carga positiva en el interior y hace que el potencial de 
-membrana disminuya. En 6 la repolarización continua hasta alcanzar el potencial 
-de equilibrio resultando en un hiperpolarización de la membrana. Finalmente en 7
-la bomba de sodio-potasio restablece el potencial de membrana en reposo.
-
-Durante la transmisión de un potencial de acción, existe un intervalo de tiempo 
-conocido comoperíodo refractario, en el cual los canales regulados por voltaje 
-aún no hanrecobrado su estado original y la neurona no responde de la misma 
-forma a un estímulo
 \begin{Figura}
     \centering
-    \includegraphics[width=0.9\textwidth]{figs/fases_potencial.png}
-    \captionof{figure}{Fases del potencial de membrana}
+    \includegraphics[width=0.7\textwidth]{figs/potencial_accion.png}
+    \captionof{figure}{Voltaje $V_{m}$ vs $t$ para un potencial de acción}
     \label{fig-potencial}
 \end{Figura}
 
+En general, el potencial de equilibrio en una neurona se encuentra alrededor de 
+los $-65 mV$ y se mantiene por el flujo de Na$^{+}$ hacia el exterior y de K$^{+}$ 
+hacia el interior. Sim embargo, durante la aplicación de un estimulo o corriente 
+externa, $V_{m}$ puede variar y despues de llegar a un valor umbral que se 
+corresponde con el número $1$ de la figura \ref{fig-potencial}, se abren 
+completamente los canales en la membrana que permiten el flujo de Na$^{+}$ hacia
+el interior superando el flujo entrante de K$^{+}$, causando un aumento o 
+despolarización en $V_{m}$ que se muestra en el número $2$ de la figura. 
+
+Mientras el potencial aumenta se abren completamente los caneles que permiten 
+la salida de K$^{+}$ fuera de la membrana, es por esto que cuanod el potencial
+alcanza su máximo (punto 3), los canales que permiten la entrada de Na$^{+}$
+se cierran y el potencial comienza a retornar a su valor de equilibrio (punto $4$).
+
+Luego en $5$, los calanes que permiten la salida de los iones se cierran en un 
+voltaje menor a $-65 mV$ y en $6$ se retorna al voltaje de equilibrio, cuando 
+los canales de Na$^{+}$ y K$^{+}$ retornan a su estado de reposo. 
+(\cite{lamberti2007desarrollo})
+
 \section{Modelo Matemático}
+
+En el modelo la descripción del potencial en la membrana $V_{m}$ con su 
+respectiva capacitancia por unidad de área $C_{m}$ y donde se aplicaba un estimulo 
+externo o corriente $I(x,t)$, due descripta un circuito eléctrico que se muestra
+en la figura \ref{fig-circuito}, donde las corrientes iónicas y corrientes de 
+fuga netas, se caracterizaban por capacitancias $g_{j}$ t capacitores $E_{j}$
+acoplados a la membrana
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.8\textwidth]{figs/circuito.png}
+    \captionof{figure}{Circuito que describe el potencial en la membrana}
+    \label{fig-circuito}
+\end{Figura}
 
 La siguiente ecuación describe la evolución temporal del potencial de membrana
 \begin{align*}
-    C_m \frac{dV}{dt} = &\underbrace{I(x,t)}_{\text{corriente externa}} - \underbrace{g_{Na}(V_{m} - E_{Na})}_{\text{Corriente $Na^{+}$}}  \\
-    &- \underbrace{g_{K}(V_{m} - E_{K})}_{\text{Corriente $K^{+}$}} - \underbrace{g_{L}(V_{m} - E_{L})}_{\text{corriente de fuga}}
+    C_m \frac{dV}{dt} = &\underbrace{I(x,t)}_{\text{corriente externa}} - \underbrace{g_{Na}(v_{m} - e_{Na})}_{\text{Corriente $Na^{+}$}}  \\
+    &- \underbrace{g_{K}(v_{m} - e_{K})}_{\text{Corriente $K^{+}$}} - \underbrace{g_{L}(v_{m} - e_{L})}_{\text{corriente de fuga}}
 \end{align*}
 
 donde $C_{m}$ es la capacitancia de la membrana, $\frac{dV}{dt}$ es el potencial 
-de membrana en el tiempo $t$, $I(x,t)$ es la corriente externa. $V_{m}$ es el
+de membrana en el tiempo $t$, $I(x,t)$ es la corriente externa. $v_{m}$ es el
 potencial de membrana en reposo. Las conductancias de los caneles de sodio, 
 potasio y de fuga están representadas por $g_{Na}$, $g_{K}$ y $g_{L}$ mientras 
-que los potenciales de equilibrio para estos mismos iones son $E_{Na}$, $E_{K}$ 
-y $E_{L}$.
+que los potenciales de equilibrio para estos mismos iones son $e_{Na}$, $e_{K}$ 
+y $e_{L}$.
 
 Ademas Hodgkin y Huxley postularon que las conductancion del sodio y del potasio 
 dependían del tiempo y del potencial de membrana. Por lo que introdujeron variables 
@@ -185,9 +154,9 @@ adimensionales $m$, $n$ y $h$ que describen la probabilidad de que los canales d
 sodio y potasio estén abiertos o cerrados. Estas variables evolucionan de acuerdo a
 las siguientes ecuaciones diferenciales
 \begin{align*}
-    \frac{dm}{dt} &= \alpha_{m}(V)(1 - m) - \beta_{m}(V)m \\
-    \frac{dn}{dt} &= \alpha_{n}(V)(1 - n) - \beta_{n}(V)n \\
-    \frac{dh}{dt} &= \alpha_{h}(V)(1 - h) - \beta_{h}(V)h
+    \frac{dm}{dt} &= \alpha_{m}(V)(1 - m) - \beta_{m}(v)m \\
+    \frac{dn}{dt} &= \alpha_{n}(V)(1 - n) - \beta_{n}(v)n \\
+    \frac{dh}{dt} &= \alpha_{h}(V)(1 - h) - \beta_{h}(v)h
 \end{align*}
 
 donde $\alpha_{k}$ y $\beta_{k}$ con $k \in \{m, n, h\}$ son constantes de velocidad 
@@ -195,16 +164,15 @@ de cambio de canales abiertos a cerrados y de cerrados a abiertos, respectivamen
 
 Entonces el modelo completo es:
 \begin{align*}
-    C_{m} \frac{dV_{m}}{dt} = &I(x,t) - g_{Na}m^{3}(V_{m} - E_{Na})  \\
-    &- g_{K}n^{4}(V_{m} - E_{K}) - g_{L}(V_{m} - E_{L}) \\
+    C_{m} \frac{dV_{m}}{dt} = &I(x,t) - g_{Na}m^{3}(v_{m} - e_{Na})  \\
+    &- g_{K}n^{4}(v_{m} - e_{K}) - g_{L}(v_{m} - e_{L}) \\
 \end{align*}
 
-\newpage
 donde 
 \begin{align*}
-    \frac{dm}{dt} &= \alpha_{m}(V)(1 - m) - \beta_{m}(V)m \\
-    \frac{dn}{dt} &= \alpha_{n}(V)(1 - n) - \beta_{n}(V)n \\
-    \frac{dh}{dt} &= \alpha_{h}(V)(1 - h) - \beta_{h}(V)h
+    \frac{dm}{dt} &= \alpha_{m}(V)(1 - m) - \beta_{m}(v)m \\
+    \frac{dn}{dt} &= \alpha_{n}(V)(1 - n) - \beta_{n}(v)n \\
+    \frac{dh}{dt} &= \alpha_{h}(V)(1 - h) - \beta_{h}(v)h
 \end{align*}
 
 con 
@@ -236,10 +204,183 @@ siguiente sección.
 
 \section{Resultados}
 
+Para implementar la solución del sistema de ecuaciones diferenciales acopladas 
+se uso el método de Runge-Kutta de cuarto orden para los casos de corriente 
+externa con estimulo débil y fuerte, una ráfaga, un período reflectario. Y para 
+el caso de exitaciones espontaneas en respuesta al ruido se utilizó el método de
+Euler.
+
+\subsection{EL estado estacionario}
+
+El estado estacionario del modelo se caracteriza por la anulación de las 
+derivadas temporales de las variables $m$, $n$ y $h$. Para ver como se comporta 
+esta situación se obtuvo el comportamiento de $m$, $n$ y $h$ en función de $V$.
+El resultado se muesta en la figura \ref{fig-nmh-ee}. Tal como se esperaba 
+como son probabilidades de apertura de los canales en presencia de un determinado 
+voltaje, los valores de cada uno se encuentran entre $0$ y $1$. Además se observa 
+como la apertura de los caneles tipo $n$ y $m$ por donde transitan los iones 
+potasio y sodio, aumenta con el voltaje de la membrana. Por otro lado, un 
+comportamiento contrario se obtiene para la probabilidad de apertura del canal 
+tipo $h$ sonde ciculan los iones de sodio.
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.8\textwidth]{figs/nmh_ee.pdf}
+    \captionof{figure}{Comportamiento de $m$, $n$ y $h$ en función de $V$ para 
+    estado estacionario.}
+    \label{fig-nmh-ee}
+\end{Figura}
+
+La figura anteior no es muy ilustrativa para representar el potencial de acción, 
+pues la definción del mismo implica un cambio en $V$ con respecto al tiempo. Es 
+por ello que en las siguientes secciones se estudiarán las caracteristicas de los 
+potenciales de accion en respuesta a diferentes estimulos.
+
+\subsection{Corriente externa nula}
+Al hacer la corriente externa nula, por Runge Kutta se obtiene la siguiente 
+figura \ref{fig-potencial-nula}, donde se observa como el voltaje alcanza un estado de
+equilibrio alrededor de los $-12 mV$. al no tener estímulos externos aparte del 
+ingreso de iones de sodio y potasio, para los cuales las probabilidad de apertura 
+de las puertas tambien alcanzan un valor de equilibrio como lo muestra la 
+figura \ref{fig-nmh-nula}.
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/potencial_vs_t.pdf}
+    \captionof{figure}{$V$ vs $t$ para el caso sin corriente externa, y 
+    condiciones iniciales $V, n, m, h =0$ }
+    \label{fig-potencial-nula}
+\end{Figura}
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/nmh_corriente_externa.pdf}
+    \captionof{figure}{$n, m, h$ para el caso sin corriente externa, y 
+    condiciones iniciales $V, n, m, h =0$ }
+    \label{fig-nmh-nula}
+\end{Figura}
+
+\subsection{Estimulo débil y estimulo fuerte}
+
+En la siguiente figura \ref{fig-potencial-df} se muestra el comportamiento del
+potencial de membrana en respuesta a un estimulo débil y fuerte. En el caso del 
+estimulo débil a los 2.5 ns, el potencial de membrana no alcanza el umbral 
+necesario para generar un potencial de acción, mientras que en el caso del 
+estimulo fuerte (10 ns), el potencial de membrana supera el umbral y se genera un 
+potencial de acción.
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/potencial_mem_estimulo_d_f.pdf}
+    \captionof{figure}{$V$ vs $t$ de un estimulo débil y fuerte}
+    \label{fig-potencial-df}
+\end{Figura}
+
+Lo mismo ocurre con las variables $n$, $m$ y $h$ que se muestran en la figura 
+\ref{fig-nmh-df}. En el caso del estimulo débil, las variables apenas cambian 
+debido a la corriente aplicada y luego de los 10ns cuando se aplica el estimulo
+fuerte $m(t)$ sube rapidamente, activando los calanes de sodio y permitiendo la 
+despolarizacion. $h(t)$ baja para desactivar los canales de sodio y $n(t)$ sube
+mas lentamente para activar los canales de potasio, contribuyendo a la repolarización 
+y la hiperlolarización de la membrana.
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/nmh_estimulo_d_f.pdf}
+    \captionof{figure}{$n, m, h$ para el caso de un estimulo débil y fuerte}
+    \label{fig-nmh-df}
+\end{Figura}
+
+\subsection{Ráfaga}
+
+Con un estimulo tipo ráfaga, de $10 /mu A/cm^{2}$ a partir de $t=5$ como lo muestra 
+la figura \ref{fig-potencial-r}, es claro que el estimulo es suficiente para
+que la neurona este en estado activo durante un tiempo prolongado. Lo mismo se 
+observa en la figura \ref{fig-nmh-r} donde las variables $n$, $m$ y $h$ se
+mantienen en un estado activo durante un tiempo prolongado.
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/potencial_rafaga.pdf}
+    \captionof{figure}{$V$ vs $t$ para el caso de una ráfaga}
+    \label{fig-potencial-r}
+\end{Figura}
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/nmh_rafaga.pdf}
+    \captionof{figure}{$n, m, h$ para el caso de una ráfaga}
+    \label{fig-nmh-r}
+\end{Figura}
+
+\subsection{Período reflectario}
+
+Por otro lado si el estimulo es un período reflectario, como se muestra en la
+figura \ref{fig-potencial-reflec}, se observa que el potencial de membrana no 
+alcanza el umbral necesario para generar un potencial de acción para determinados 
+periodos de tiempo, pero para los $t$ que son multiplos de $10$ ns, el potencial
+de membrana supera el umbral y se genera un potencial de acción. Lo mismo ocurre
+con las variables $n$, $m$ y $h$ que se muestran en la figura \ref{fig-nmh-reflec}.
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/potencial_reflectario.pdf}
+    \captionof{figure}{$V$ vs $t$ para el caso de un período reflectario}
+    \label{fig-potencial-reflec}
+\end{Figura}
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/nmh_reflectario.pdf}
+    \captionof{figure}{$n, m, h$ para el caso de un período reflectario}
+    \label{fig-nmh-reflec}
+\end{Figura}
+
+\subsection{Exitaciones espontaneas en respuesta al ruido}
+
+Por último, con exitaciones espontaneas en respuesta al ruido, es decir, una 
+corriente estocástica con distribución normal estandar, el comportamiento del 
+potecial de membrana se observa que hay un comportamiento oscilatorio en el
+potencial de membrana, es decir, la neurona se encuentra en un estado activo
+durante un tiempo prolongado, como se muestra en la figura \ref{fig-potencial-euler}.
+
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/potencial_euler.pdf}
+    \captionof{figure}{$V$ vs $t$ para el caso de exitaciones espontaneas en 
+    respuesta al ruido}
+    \label{fig-potencial-euler}
+\end{Figura}
+
+En cuanto a las variables $n$, $m$ y $h$ la figura \ref{fig-nmh-euler} también 
+muestra un comportamiento oscilatorio.
+\begin{Figura}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/nmh_euler.pdf}
+    \captionof{figure}{$n, m, h$ para el caso de exitaciones espontaneas en
+    respuesta al ruido}
+    \label{fig-nmh-euler}
+\end{Figura}
 
 \section{Conclusiones}
 
+En este trabajo se resolvio el modelo de Hodgkin-Huxley al cual aplicamos 
+diferentes estimulos para estudiar el comportamiento del potencial de membrana
+en respuesta a estos. 
 
+En ausencia de estimulos de corriente externos, se encontró como el potencial de 
+membrana alcanza un estado de equilibrio alrededor de los $-12 mV$, indicando 
+la existencia de un voltaje de equilibrio, para el cual las probabilidad de 
+apertura de los canales por donde fluyen los iones de sodio y potasio se manienen 
+constantes en el tiempo.
+
+En presencia de estimulos débiles y fuertes, se observó como el potencial de
+membrana cuando el estimulo es débil no alcanza el umbral necesario para generar
+un potencial de acción, mientras que en el caso de un estimulo fuerte si lo 
+alcanza. Cuando estamos en presencia de una ráfaga, el potencial de membrana se
+mantiene activo durante un tiempo prolongado. En el caso de un período reflectario 
+el potencial de membrana no alcanza el umbral necesario para generar un potencial
+de acción para determinados periodos de tiempo, pero para los $t$ que son
+multiplos de $10$ ns, el potencial de membrana supera el umbral y se genera un
+potencial de acción. Por último, con exitaciones espontaneas en respuesta al ruido,
+el comportamiento del potencial de membrana es oscilatorio, es decir, la neurona
+se encuentra en un estado activo durante un tiempo prolongado.
 % Create the reference section using BibTeX:
 \bibliography{ref}
 
