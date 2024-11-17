@@ -1,0 +1,90 @@
+%% ****** Start of file apstemplate.tex ****** %
+\documentclass[aps,prl,reprint,groupedaddress]{revtex4-2}
+
+% You should use BibTeX and apsrev.bst for references
+% Choosing a journal automatically selects the correct APS
+% BibTeX style file (bst file), so only uncomment the line
+% below if necessary.
+% \bibliographystyle{apsrev4-2}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{subfigure}
+\usepackage{hhline}
+\usepackage[left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
+\usepackage[miktex]{gnuplottex}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage[percent]{overpic}
+\usepackage{tikz}
+\usepackage{mathrsfs}
+\usepackage{wasysym}
+\usepackage{tikz-cd}
+\usepackage{caption}  % Elimina hypcap=true si está presente
+\usepackage{stackengine,scalerel}
+
+\usepackage{caption}
+\captionsetup{skip=0pt}  % Reduce el espacio entre la imagen y su caption
+\raggedbottom
+
+% so sections, subsections, etc. become numerated.
+\setcounter{secnumdepth}{3}
+
+\newenvironment{Figura}
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
+
+\renewcommand{\appendixname}{Apéndice} % Change "Appendix" to "Apéndice"
+
+\begin{document}
+
+%Title of paper
+\title{
+Fashion-MNIST con PyTorch
+}
+
+% autores
+\author{Kevin Gaston Mansilla}
+\email[]{kevin.mansilla@mi.unc.edu.ar}
+
+\affiliation{}
+
+%fecha
+\date{\today}
+
+\begin{abstract}
+En este trabaj
+\end{abstract}
+
+% insert suggested keywords - APS authors don't need to do this
+%\keywords{}
+
+%\maketitle must follow title, authors, abstract, and keywords
+\maketitle
+
+\section{Introducción}
+
+
+\section{Resultados}
+
+
+
+\section{Conclusiones}
+
+\bibliography{ref}
+
+% Specify following sections are appendices. Use \appendix* if there
+% only one appendix.
+
+%\onecolumngrid
+
+
+\end{document}
+%
+% ****** End of file apstemplate.tex ******
