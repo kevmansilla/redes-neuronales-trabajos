@@ -59,6 +59,15 @@ Fashion-MNIST con PyTorch
 \date{\today}
 
 \begin{abstract}
+En este trabajo se implementa una red feed forward autoencoder para clasificar
+imágenes de Fashion-MNIST. Se entrenan tres modelos con diferentes hiperparámetros
+y se comparan los resultados obtenidos por medio de la precisión y la 
+pérdida (loss). Se observa que el modelo 2, que utiliza el optimizador Adam, 
+tiene un mejor desempeño que el modelo que usa un optimizador SGD, ya que
+converge más rápido y tiene una precisión más alta. Por otro lado, se observa que
+aumentar las épocas de entrenamiento no necesariamente mejora el desempeño de la
+red, ya que el modelo 3, que tiene el doble de épocas que el modelo 2, tiene una
+precisión similar.
 \end{abstract}
 
 % insert suggested keywords - APS authors don't need to do this
@@ -116,7 +125,7 @@ de los datos.
 
 \section{Arquitectura de Red Neuronal}
 En este trabajo, se implementará una red feed forward autoencoder al corpus 
-Fashion-MNIST, el cual consiste en un conjunto de imágenes de ropa en escala de
+Fashion-MNIST\footnote{https://github.com/zalandoresearch/fashion-mnist}, el cual consiste en un conjunto de imágenes de ropa en escala de
 grises de 28x28 pixeles, conformadas por:
 \begin{verbatim}
 0: 'T-shirt/top',
@@ -130,6 +139,14 @@ grises de 28x28 pixeles, conformadas por:
 8: 'Bag',
 9: 'Ankle boot'
 \end{verbatim}
+
+En la figura \ref{fig-sample} se muestran ejemplos de algunas categorias.
+\begin{Figura}
+  \centering
+  \includegraphics[width=1\textwidth]{figs/sample.png}
+  \captionof{figure}{Arquitectura de la red neuronal}
+  \label{fig-sample}
+\end{Figura}
 
 Donde el principal objetivo es clasificar una imagen de entrada en una de las 
 $10$ categorías. En la figura \ref{fig-red} se muestra la arquitectura de la red.
@@ -184,8 +201,9 @@ Aqui presentaremos los resultados obtenidos al entrenar la red neuronal en los
 diferentes modelos planteados. Los hiperparámetros son:
 
 \begin{itemize}
-  \item Modelo 1: $n1=128$, $n2=64$, $30$ épocas y un batch size de $100$ con un
-  optimizador Stoachastic Gradient Descent (SGD) con un learning rate de $1e-3$.
+  \item Modelo 1 (Base): $n1=128$, $n2=64$, $30$ épocas y un batch size de $100$ 
+  con un optimizador Stoachastic Gradient Descent (SGD) con un learning rate 
+  de $1e-3$.
   \item Modelo 2: $n1=128$, $n2=64$, $30$ épocas y un batch size de $100$ con un
   optimizador Adam con un learning rate de $1e-3$.
   \item Modelo 3: $n1=128$, $n2=64$, $60$ épocas y un batch size de $100$ con un
@@ -206,24 +224,80 @@ mejor desempeño y menor tiempo de entrenamiento que el modelo 3.
 \begin{table}[h!]
   \begin{tabular}{lccll}
     \hline
-    Modelos   & Loss      & Acuracy  & \\ \hline
-    Modelo 1  & $0.51\% $ & $81.0\%$ & \\
-    Modelo 2  & $0.32\% $ & $89.3\%$ & \\
-    Modelo 3  & $0.37\% $ & $89.1\%$ & \\ \hline
+    Modelos         & Loss      & Presición & \\ \hline
+    Modelo 1 (Base) & $0.51\% $ & $81.0\%$  & \\
+    Modelo 2        & $0.32\% $ & $89.3\%$  & \\
+    Modelo 3        & $0.37\% $ & $89.1\%$  & \\ \hline
   \end{tabular}
   \caption{Resultados del entrenamoento de la red neuronal}
   \label{tab:models}
 \end{table}
 
-\subsection{Modelo Base}
+En la figura \ref{fig-ap12} se muestran las curvas de presición y loss para los
+modelos 1 y 2. En la parte $a)$ se observa que con SGD la pérdida inicial es 
+considerablemente más alta que la de Adam, lo cual indica que converge más 
+lentamente.  A su vez, a medida que aumentan las épocas, la pérdida se reduce 
+gradualmente, pero nunca alcanza los valores de Adam, lo que indica que el
+optimizador Adam es más eficiente que el SGD. En ambos modelos la brecha 
+entre la curva de entrenamieno y validación es pequeña, lo que indica que no
+hay sobreajuste.
 
-\subsection{Modelo con optimizador Adam}
+Por otra parte en la parte $b)$ Adam logra una alta presición mucho más rápido
+que SGD. Aun que SGD mejora contantemente, no alcanza los valores de Adam. 
+Una observación importante es que en Adam las curvas de entrenamiento y 
+valución son casi identicas lo cual demuestra que el modelo es robusto y 
+generaliza bien.
 
-\subsection{Modelo con 60 épocas}
+Entonces se puede derir que Adam tiene un sesempeño superior tanto en términos 
+de reducción de pérdida como en precisión, mostrando una canvergencia más 
+rápida y resultados más estables. Y SGD es mas lento en converger y menos
+estable en términos de precisión. 
 
+\begin{Figura}
+  \centering
+  \includegraphics[width=1\textwidth]{figs/modelos_plots.png}
+  \captionof{figure}{Presición y Loss de los modelos 1 y 2}
+  \label{fig-ap12}
+\end{Figura}
 
+Como se mencionó anteriormente, el modelo 2 es el mejor modelo, por lo que 
+resulta interesante analizar la matriz de confusión de este modelo. En la
+figura \ref{fig-matriz2} se muestra la matriz de confusión del modelo 2, donde
+se puede observar que los elementos de la diagonal principal son los más
+grandes, lo que indica que la red clasifica correctamente la mayoría de las
+imágenes. Mientras que los elementos por fuera de la diagonal principal son 
+elementos que la red clasifica incorrectamente, por ejemplo, la red clasifica 
+T-shirt/top como Shirt, lo cual es un error común ya que ambas categorías son
+similares.
+
+Por otra parte en Shirt el error es mayor, en la gran mayoria de los casos 
+se clasifica como T-shirt/top, segudo de Coat, Pullover y en menor medida
+como Dress. Lo cual indica que la red tiene problemas para clasificar esta 
+categoría ya que son muy similares. Por otro lado, en Sneaker el error es menor, 
+ya que la red clasifica correctamente la mayoría de las imágenes, solo se confunde 
+con Ankle boot y Sandal que son categorías similares.
+
+\begin{Figura}
+  \centering
+  \includegraphics[width=1\textwidth]{figs/matrix_model2.png}
+  \captionof{figure}{Matriz de confución modelo 2}
+  \label{fig-matriz2}
+\end{Figura}
 
 \section{Conclusiones}
+
+En este trabajo se implementó una red feed forward autoencoder para clasificar
+imágenes de Fashion-MNIST. Se entrenaron tres modelos con diferentes hiperparámetros
+y se compararon los resultados obtenidos. Se observó que el modelo 2, que utiliza
+el optimizador Adam, tiene un mejor desempeño que los otros modelos, ya que
+converge más rápido y tiene una precisión más alta. Por otro lado, se observó que
+aumentar las épocas de entrenamiento no necesariamente mejora el desempeño de la
+red, ya que el modelo 3, que tiene el doble de épocas que el modelo 2, tiene una
+precisión similar. Por último, se analizó la matriz de confusión del modelo 2 y se
+observó que la red clasifica correctamente la mayoría de las imágenes, pero tiene
+problemas para clasificar las categorías T-shirt/top y Shirt, ya que son muy
+similares. Y en las categorias donda hay menos imagenes parecidas la red clasifica
+correctamente la mayoria de las imagenes.
 
 \bibliography{ref}
 
