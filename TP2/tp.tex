@@ -106,9 +106,9 @@ Al utilizar una red feed forward autoencoder, se busca que la red aprenda a
 reconstruir la entrada en la salida, es decir, que la salida sea igual a la 
 entrada. Por lo tanto, la red debe aprender a comprimir la información de 
 entrada en una representación más pequeña, para luego descomprimir la 
-información y obtener la salida. Como trabajaremos con una solo capa oculta, 
-la red tendrá la arquitectura de la figura \ref{fig-feed-forward-autoencoder},
-donde $V_{j}$ es la función de activación de la capa oculta.
+información y obtener la salida. La red que usaremos será como 
+\ref{fig-feed-forward-autoencoder}, donde $V_{j}$ es la función de activación 
+de la capa oculta.
 
 \begin{Figura}
   \centering
@@ -128,7 +128,7 @@ de los datos.
 En este trabajo, se implementará una red feed forward autoencoder al corpus 
 Fashion-MNIST\footnote{https://github.com/zalandoresearch/fashion-mnist}, la 
 cual consiste en un conjunto de imágenes de ropa en escala de grises de 
-$28\times 28$ píxeles, conformadas por:
+$28\times 28$ píxeles, conformadas por las siguientes categorias:
 \begin{verbatim}
 0: 'T-shirt/top',
 1: 'Trouser',
@@ -155,17 +155,17 @@ $10$ categorías. En la figura \ref{fig-red} se muestra la arquitectura de la re
 Donde se observa que a la imagen inicial en la capa $1$ se la aplica un 
 \textit{flatten} para transformar la imagen de $28x28$ en un vector de $784$ 
 elementos, luego pasa por la primera capa oculta de $n1$ neuronas la cual al 
-inicio se le aplica un módulo \textit{lineal}, luego se le aplica una función 
-de activación \textit{ReLU} y finalmente se le aplica un módulo \textit{dropout} 
-con una probabilidad de $0.2$.
+inicio se le aplica un módulo \textit{lineal}, luego una función de activación 
+\textit{ReLU} y finalmente se le aplica un módulo \textit{dropout} con una 
+probabilidad de $0.2$.
 
 Luego, la salida de la primera capa oculta pasa por la segunda capa oculta de $n2$
-neuronas que tiene el mismo comportamiento que la primera capa oculta. Finalmente,
+neuronas que tiene el mismo comportamiento que la capa anterior. Finalmente,
 el flujo de la red llega a la capa final que tiene $10$ neuronas cada una 
 representando una de las categorías de Fashion-MNIST. Asi el output final es un 
 vector de $10$. En este ejemplo particular se puede ver que como input se paso 
-una imagen de Ankle boot y como el output, el valor más alto se da en la posición
-$9$ significa que la red clasificó correctamente la imagen.
+una imagen de Ankle boot y como en el output final, el valor más alto se da en 
+la posición $9$ significa que la red clasificó correctamente la imagen.
 
 \begin{Figura}
   \centering
@@ -174,8 +174,8 @@ $9$ significa que la red clasificó correctamente la imagen.
   \label{fig-red}
 \end{Figura}
 
-Entonces el objetivo del trabajo será entrenar esta red usando PyTorch como 
-función de perdida se utiliza el error cuadrático medio y el método de descenso 
+Entonces se buscará entrenar esta red usando PyTorch, como función de perdida 
+se utiliza el error cuadrático medio y el método de descenso 
 por el gradiente estocástico como algoritmo de optimización (minimización), 
 con un learning rate de $1e-3$ que indica 'de qué tamaño' dar el paso 
 para que el algoritmo converja a la solución. Lo ideal es hacerlo de forma 
@@ -239,14 +239,14 @@ mejor desempeño y menor tiempo de entrenamiento que el modelo 3.
 En la figura \ref{fig-ap12} se muestran las curvas de precisión y loss para los
 modelos 1 y 2. En la parte $a)$ se observa que con SGD la pérdida inicial es 
 considerablemente más alta que la de Adam, lo cual indica que converge más 
-lentamente.  A su vez, a medida que aumentan las épocas, la pérdida se reduce 
-gradualmente, pero nunca alcanza los valores de Adam, lo que indica que el
-optimizador Adam es más eficiente que el SGD. En ambos modelos, la brecha 
+lentamente. A su vez, a medida que aumentan las épocas, la pérdida se reduce 
+gradualmente, pero nunca alcanza los valores de Adam, lo que indica que este 
+optimizador es más eficiente que el SGD. En ambos modelos, la brecha 
 entre la curva de entrenamiento y validación es pequeña, lo que indica que no
 hay sobreajuste.
 
 Por otra parte, en la parte $b)$ Adam logra una alta precisión mucho más rápida
-que SGD. Aunque SGD mejora constantemente, no alcanza los valores de Adam. 
+que SGD. Aunque este último mejora constantemente, no alcanza los valores de Adam. 
 Una observación importante es que en Adam las curvas de entrenamiento y 
 valuación son casi idénticas lo cual demuestra que el modelo es robusto y 
 generaliza bien.
@@ -264,21 +264,20 @@ estable en términos de precisión.
 \end{Figura}
 
 Como se mencionó anteriormente, el modelo 2 es el mejor modelo, por lo que 
-resulta interesante analizar la matriz de confusión de este modelo. En la
-figura \ref{fig-matriz2} se muestra la matriz de confusión del modelo 2, donde
-se puede observar que los elementos de la diagonal principal son los más
-grandes, lo que indica que la red clasifica correctamente la mayoría de las
-imágenes. Mientras que los elementos por fuera de la diagonal principal son 
+resulta interesante analizar la matriz de confusión. En la figura \ref{fig-matriz2}
+los elementos de la diagonal principal se corresponden con los elementos 
+correctamente clasificados, y se observa que son bastante altos en la mayoria de 
+los casos. Mientras que los elementos por fuera de la diagonal principal son 
 elementos que la red clasifica incorrectamente, por ejemplo, la red clasifica 
-T-shirt/top como Shirt, lo cual es un error común, ya que ambas categorías son
-similares.
+T-shirt/top como Shirt en $75$ casos, lo cual es un error común, ya que ambas 
+categorías son similares.
 
 Por otra parte, en Shirt el error es mayor, en la gran mayoría de los casos 
-se clasifica como T-shirt/top, segundo de Coat, Pullover y en menor medida
-como Dress. Lo cual indica que la red tiene problemas para clasificar esta 
-categoría, ya que son muy similares. Por otro lado, en Sneaker el error es menor, 
+se clasifica como T-shirt/top, Coat, Pullover y en menor medida
+como Dress. Esto se debe a la similitud entre las categorías, ya que todas
+son prendas de vestir superiores. Por otro lado, en Sneaker el error es menor, 
 ya que la red clasifica correctamente la mayoría de las imágenes, solo se confunde 
-con Ankle boot y Sandal que son categorías similares.
+con Ankle boot y Sandal.
 
 \begin{Figura}
   \centering
@@ -296,8 +295,9 @@ modelo 2, que utiliza el optimizador Adam, tiene un mejor desempeño que los
 otros modelos, ya que converge más rápido y tiene una precisión más alta. Por 
 otro lado, se observó que aumentar las épocas de entrenamiento no 
 necesariamente mejora el desempeño de la red, ya que el modelo 3, que tiene 
-el doble de épocas que el modelo 2, tiene una precisión similar. Por último, 
-se analizó la matriz de confusión del modelo 2 y se observó que la red 
+el doble de épocas que el modelo 2, tiene una precisión similar. 
+
+Por último, se analizó la matriz de confusión del modelo 2 y se observó que la red 
 clasifica correctamente la mayoría de las imágenes, pero tiene problemas para 
 clasificar las categorías T-shirt/top y Shirt, ya que son muy similares. Y en 
 las categorías donde hay menos imágenes parecidas, la red clasifica 
