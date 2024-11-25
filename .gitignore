@@ -8,3 +8,4 @@ tpNotes.bib
 *.fdb_latexmk
 *.fls
 /biblio
+__pycache__
