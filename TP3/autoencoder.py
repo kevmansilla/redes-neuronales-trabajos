@@ -147,7 +147,7 @@ def model_generator(NeuralNetwork, num_n, drop, num_epochs, num_batch, opti, lea
         list_valid_avg_loss.append(valid_avg_loss)
     print("Done!")
 
-    # 2.10)
+    # plot
     plt.xlabel('epoch')
     plt.ylabel('loss')
     plt.plot(list(range(1, len(list_train_avg_loss) + 1)),

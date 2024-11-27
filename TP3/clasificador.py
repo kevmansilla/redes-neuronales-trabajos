@@ -19,7 +19,6 @@ from sklearn.metrics import (
 
 # ====================================================================================================================
 
-# 3.2)
 # Definimos la función de entrenamiento
 
 
@@ -89,19 +88,15 @@ def valid_loop_classifier(dataloader, model, loss_fn, device):
 
 
 def classifier_generator(NeuralNetwork, num_n, trained_model, drop, num_epochs, num_batch, opti, learning_rate, train_data, valid_data):
-    # 2.3)
     # Creamos los DataLoaders
     train_loader = DataLoader(train_data, batch_size=num_batch, shuffle=True)
     valid_loader = DataLoader(valid_data, batch_size=num_batch, shuffle=True)
 
-    # 3.3)
     # Creamos una instancia de una función de pérdida, una MSE loss en este caso
     loss_fn = nn.CrossEntropyLoss()  # usar para clasificacion
 
-    # 3.5)
     model = NeuralNetwork(n=num_n, encoder=trained_model.encoder, p=drop)
 
-    # 3.4)
     # Creamos un optimizador, un Stochastic Gradient Descent, en este caso.
     if opti == 'SGD':
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
@@ -115,13 +110,11 @@ def classifier_generator(NeuralNetwork, num_n, trained_model, drop, num_epochs, 
         optimizer = torch.optim.SGD(
             model.classifier.parameters(), lr=learning_rate)
 
-    # 3.6)
     # Determinamos en que dispositivo vamos a trabajar, una CPU o una GPU
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # Pasamos el modelo al dispositivo
     model = model.to(device)
 
-    # 3.7) y 3.8)
     # Finalmente, entrenamos iterando sobre épocas.
     # Además, testeamos el modelo en cada una de ellas.
     num_epochs = num_epochs
@@ -143,7 +136,6 @@ def classifier_generator(NeuralNetwork, num_n, trained_model, drop, num_epochs, 
         list_valid_acc.append(valid_acc)
     print("Done!")
 
-    # 3.9)
     plt.xlabel('epoch')
     plt.ylabel('CEL')
     plt.plot(range(1, len(list_train_avg_loss) + 1),
