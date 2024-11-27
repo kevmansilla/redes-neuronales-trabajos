@@ -36,7 +36,6 @@ def unbatch(x):
     return x.squeeze().detach().cpu().numpy()  # (1,28,28) -> (28,28)
 
 
-# 2.1)
 # Definimos la funcion de entrenamiento
 
 
@@ -72,7 +71,6 @@ def train_loop(dataloader, model, loss_fn, optimizer, device):
     avg_loss = sum_loss/num_batches
     return avg_loss
 
-# 2.2)
 # De manera similar, definimos la función de validación
 
 
@@ -105,19 +103,15 @@ def valid_loop(dataloader, model, loss_fn, device):
 
 
 def model_generator(NeuralNetwork, num_n, drop, num_epochs, num_batch, opti, learning_rate, train_data, valid_data):
-    # 2.3)
     # Creamos los DataLoaders
     train_loader = DataLoader(train_data, batch_size=num_batch, shuffle=True)
     valid_loader = DataLoader(valid_data, batch_size=num_batch, shuffle=True)
 
-    # 5.4)
     # Creamos una instancia de una función de pérdida, una MSE loss en este caso
     loss_fn = nn.MSELoss()  # usar para autoencoder
 
-    # 2.6)
     model = NeuralNetwork(n=num_n, p=drop)
 
-    # 2.5)
     # Creamos un optimizador, un Stochastic Gradient Descent, en este caso.
     if opti == 'SGD':
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
@@ -125,7 +119,6 @@ def model_generator(NeuralNetwork, num_n, drop, num_epochs, num_batch, opti, lea
         optimizer = torch.optim.Adam(
             model.parameters(), lr=learning_rate, eps=1e-08, weight_decay=0, amsgrad=False)
 
-    # 2.7)
     # Determinamos en que dispositivo vamos a trabajar, una CPU o una GPU
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # Pasamos el modelo al dispositivo
@@ -163,7 +156,6 @@ def model_generator(NeuralNetwork, num_n, drop, num_epochs, num_batch, opti, lea
 
 
 def test_model(model, test_data, indexes=None):
-    # 5.11)
     figure = plt.figure()
     rows, cols = 3, 2
     i = 0  # subplot index
