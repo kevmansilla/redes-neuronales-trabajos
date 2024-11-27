@@ -224,8 +224,12 @@ modelo no es capaz de reconstruir la imagen original.
 Los resultados obtenidos para el modelo base entrenado se presentan en la figura
 \ref{fig-modelb-entrenado-perdida}. Se ve que las curvas muestran una 
 disminución en la función de pérdida a medida que avanzan las épocas,pero a 
-partir de la época $5$ las curvas comienzan a aumentar drasticamente, lo cual
-podría ser un signo de que el modelo no va a tener un buen desempeño.
+partir de la época $5$ aproximadamente las curvas comienzan a aumentar 
+drasticamente, lo cual podría ser un signo de que el modelo no va a tener un 
+buen desempeño. Es importante resaltar que las curvas simpre estan muy proximas 
+entre si, lo cual indica que el modelo esta generalizando bien, pero dada la 
+oscilación de las curvas no se puede asegurar que el modelo este aprendiendo
+correctamente.
 \begin{Figura}
   \centering
   \includegraphics[width=0.60\textwidth]{figs1/modelo_original.png}
@@ -248,8 +252,8 @@ buena, lo cual confirma lo observado en la función de pérdida.
 
 En la figura \ref{fig-model-dropout01} se muestra la función de pérdida del
 modelo con probabilidad de dropout $0.1$. Podemos identificar un comportamiento 
-similar al modelo base, por lo que el cambio de este hiperparámetro no afecta
-significativamente el desempeño del modelo.
+similar al modelo base pero con una oscilación no tan pronunciada, por lo que el 
+cambio de este hiperparámetro no afecta significativamente el desempeño del modelo.
 \begin{Figura}
   \centering
   \includegraphics[width=0.60\textwidth]{figs1/modelo_n64_dropout01.png}
@@ -276,7 +280,8 @@ disminuyen constantemente, lo que indica el autoencoder está logrando comprimir
 y reconstruir los datos de entrada de manera eficiente. La proximidad entre las 
 curvas muestra que el autoencoder esta funcionando correctamente, es decir, 
 que las representaciones latentes que aprende son aplicables tanto al conjunto 
-de entrenamiento como al de validación.
+de entrenamiento como al de validación. Y además al ver el eje de loss vemos
+que los valores son menores que en el modelo anterior.
 \begin{Figura}
   \centering
   \includegraphics[width=0.60\textwidth]{figs1/modelo_n256_dropout01.png}
@@ -354,8 +359,8 @@ predicciones son correctas.
 
 Se tiene un buen desempeño en clases como Trouser, Sandal, Sneaker, Bag y Ankle
 Boot. Pero tiene dificultades en distingir entre las clases Shirt y Coat, 
-ejemplo tomando la fila Shirt se ve que solo acierta 695 veces y 138 veces se 
-equivoca prediciendo T-shirt y 83 como Pullover, algo similar ocurre con Coat, 
+ejemplo tomando la fila Shirt se ve que solo acierta 713 veces y 142 veces se 
+equivoca prediciendo T-shirt y 60 como Pullover, algo similar ocurre con Coat, 
 esto se debe a la similitud entre las categorías, ya que todas son prendas de 
 vestir superiores.
 \begin{Figura}
