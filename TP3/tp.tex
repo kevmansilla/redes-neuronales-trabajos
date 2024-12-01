@@ -78,18 +78,18 @@ Tomando como punto de partida la base de datos de Fashion MNIST
 este trabajo es implementar un autoencoder convolucional que es básicamente 
 un sistema de codificación y decodificación de imágenes.
 
-Luego de entrenar el autoencoder, realizaremos experimentos variando los 
+Luego de entrenarlo, realizaremos experimentos variando los 
 hiperparámetros de la red para ver cómo afectan al error de reconstrucción. 
 Por otro lado, implementaremos y entrenaremos un clasificador convolucional 
 reutilizando el encoder del autoencoder previamente definido. 
 
-Por último, experimentaremos solo reentrenando los parámetros de la capa 
-clasificadora, dejando los parámetros de la capa codificadora tal como vienen 
-entrenados del autoencoder convolucional y compararemos los resultados obtenidos.
+Por último, probaremos como se comporta solo reentrenando los parámetros de la 
+capa clasificadora, dejando los parámetros de la capa codificadora tal 
+como vienen entrenados del autoencoder convolucional inicial.
 
 \section{Autoencoder Convolucional}
 Se puede intuir que el propósito de un autoencoder es aprender una aproximación 
-de la función identidad. Por medio de la  reducción de la dimensionalidad,
+de la función identidad, por medio de la reducción de la dimensionalidad,
 es decir, comprimir la información de entrada en una representación de menor
 dimensión.
 
@@ -105,8 +105,7 @@ en el encoder.
   \label{fig-autoencoder}
 \end{Figura}
 
-Entrenaremos el autoencoder base con los siguientes hiperparámetros (modelo 
-base):
+Entrenaremos con los siguientes hiperparámetros (modelo base):
 \begin{itemize}
   \item [-] $n = 64$ (número de neuronas en la capa lineal).
   \item [-] $lr = 0.001$.
@@ -121,21 +120,21 @@ La arquitectura del encoder es la siguiente:
 \begin{itemize}
   \item Una capa convolucional 2D compuesta por:
   \begin{itemize}
-    \item [-] un capa $Conv2d$ de entrada de dimensiones $(1, 28, 28)$ y de 
-    salida $(16, 26, 26)$.
+    \item [-] un capa $Conv2d$ de entrada de dimensiones $(1, 28, 28)$, de 
+    salida $(16, 26, 26)$ y kernel $(3,3)$.
     \item [-] una capa de activación $ReLU$.
     \item [-] una capa $Dropout$.
     \item [-] una capa $MaxPool2d$, la cual mapea dimensiones $(16, 26, 26)$ a
-    $(16, 13, 13)$.
+    $(16, 13, 13)$ y kernel $(2,2)$.
   \end{itemize}
   \item Otra capa convolucional 2D compuesta por:
   \begin{itemize}
-    \item [-] un capa $Conv2d$ de entrada de dimensiones $(16, 13, 13)$ y de 
-    salida $(32, 11, 11)$
+    \item [-] un capa $Conv2d$ de entrada de dimensiones $(16, 13, 13)$, de 
+    salida $(32, 11, 11)$ y kernel $(3,3)$.
     \item [-] una capa de activación $ReLU$.
     \item [-] una capa $Dropout$.
     \item [-] una capa $MaxPool2d$, la cual mapea dimensiones $(32, 11, 11)$ a
-    $(32, 5, 5)$.
+    $(32, 5, 5)$ y kernel $(2,2)$.
   \end{itemize}
   \item Una capa lineal compuesta por:
   \begin{itemize}
@@ -158,14 +157,16 @@ El decoder con las siguientes capas:
   \item Una capa convolucional 2D compuesta por:
   \begin{itemize}
     \item [-] un capa $ConvTranspose2d$ que mapea dimensiones $(32, 5, 5)$ a
-    $(16, 13, 13)$.
+    $(16, 13, 13)$, kelnel\_size $(4,4)$, stride $(2,2)$ y un 
+    output\_padding de $(1,1)$.
     \item [-] una capa de activación $ReLU$.
     \item [-] una capa $Dropout$.
   \end{itemize}
   \item Otra capa convolucional 2D compuesta por:
   \begin{itemize}
     \item [-] un capa $ConvTranspose2d$ que mapea dimensione $(16, 13, 13)$ a
-    $(1, 28, 28)$.
+    $(1, 28, 28)$, kernel\_size $(4,4)$, stride $(2,2)$ y un 
+    output\_padding de $(1,1)$.
     \item [-] una capa de activación $Sigmoid$.
   \end{itemize}
 \end{itemize}
@@ -181,8 +182,8 @@ cambiaremos el número de neuronas en la capa lineal a $256$ con el mismo
 dropout y finalmente cambiaremos el optimizador por SGD.
 
 \section{Clasificador Convolucional}
-Una vez entrenado el autoencoder, procederemos a reutilizar el encoder para
-entrenar un clasificador convolucional. Que tendra la siguiente arquitectura:
+Una vez entrenado el autoencoder, reutilizaremos el encoder para entrenar un 
+clasificador convolucional. Que tendra la siguiente arquitectura:
 \begin{itemize}
   \item Una capa lineal compuesta por:
   \begin{itemize}
@@ -192,11 +193,12 @@ entrenar un clasificador convolucional. Que tendra la siguiente arquitectura:
 \end{itemize}
 
 El clasificador será entrenado de dos formas. Primero reentrenaremos todos los
-parámetros de la red y luego solo reentrenaremos los parámetros de la capa
-clasificadora usando el encoder del autoencoder previamente entrenado.
+parámetros de la red y luego solo reentrenaremos la capa clasificadora, dejando 
+los parámetros de la capa codificadora tal como vienen entrenados del autoencoder 
+convolucional base, con el fin de comparar los resultados obtenidos.
 
 \section{Resultados}
-\subsection{Modelo sin entrenar}
+\subsection{Modelo base sin entrenar}
 
 En la figura \ref{fig-model-sin-entrenar} se muestra la imagen a predecir y las
 imágenes reconstruidas por el modelo sin entrenar. Se puede observar que el
@@ -212,16 +214,12 @@ modelo no es capaz de reconstruir la imagen original.
 
 \subsection{Modelo base entrenado}
 
-Los resultados obtenidos para el modelo base entrenado se presentan en la figura
+Los resultados para el modelo base entrenado se presentan en la figura
 \ref{fig-modelb-entrenado-perdida}. Las curvas muestran una disminución inicial 
-en las funciones de pérdida a media que avanzan las épocas. Sin embargo, a 
-partir de la época $5$, las curvas experimentan un aumento, lo que podría ser 
-un signo de que el modelo no va a tener un buen desempeño. 
-
-Cabe destacar que las curvas permanecen muy próximas entre sí durante el 
-entrenamiento, esto puede indicar que el modelo está generalizando bien, pero
-dada la oscilación de las curvas, no se puede asegurar que el modelo esté
-aprendiendo correctamente.
+en las funciones de pérdida a media que avanzan las épocas, sin embargo, a 
+partir de la época $5$, las curvas experimentan un leve aumento seguidas de 
+una leve oscilación, lo que podría ser un signo de que el modelo no va a tener 
+un buen desempeño. 
 
 Por otro lado, en la figura \ref{fig-modelb-entrenado-img} se aprecia que el modelo 
 logra reconstruir la imagen original, pero con una calidad no muy buena, lo cual 
@@ -250,9 +248,10 @@ confirma lo observado en la función de pérdida.
 \subsection{Modelo con probabilidad de dropout 0.1, $n=64$}
 
 En la figura \ref{fig-model-dropout01} se muestra la función de pérdida del
-modelo con probabilidad de dropout $0.1$. Identificamos un comportamiento 
-similar al modelo base, pero con una oscilación no tan pronunciada, por lo que el 
-cambio de este hiperparámetro no afecta significativamente el desempeño del modelo.
+modelo variando solo la probabilidad de dropout a $0.1$. Identificamos un 
+comportamiento similar al modelo base, pero con una oscilación no tan 
+pronunciada, por lo que el cambio de este hiperparámetro no afecta 
+significativamente el desempeño del modelo.
 
 A su vez, en la figura \ref{fig-model-dropout05b} vemos que el modelo es capaz de 
 captar los patrones generales de las imágenes, pero pierde información de alto 
@@ -278,16 +277,16 @@ nivel, como los bordes o los detalles más finos.
   \end{minipage}
 \end{Figura}
 
-\subsection{Modelo con probabilidad de dropout 0.1, $n=256$}
+\subsection{Modelo con probabilidad de dropout 0.1 y $n=256$}
 
 Ahora, con un dropout de $0.1$ y $n=256$ como vemos en el gráfico 
-\ref{fig-model-dropout01-256} que las funciones de pérdida de ambos conjuntos 
+\ref{fig-model-dropout01-256} las funciones de pérdida de ambos conjuntos 
 de datos disminuyen constantemente, lo que indica que el autoencoder está logrando 
-comprimir y reconstruir los datos de entrada de manera eficiente. La proximidad 
-entre las curvas muestra que el autoencoder está funcionando correctamente, 
-es decir, que las representaciones latentes que aprende son aplicables tanto al 
-conjunto de entrenamiento como al de validación. Y además, al ver el eje de loss 
-vemos que los valores son menores que en el modelo anterior.
+comprimir y reconstruir los datos de entrada de manera eficiente. 
+
+La proximidad entre las curvas es casi idéntica que en los casos anteriores, 
+pero al ver el eje de loss vemos que los valores son mucho mejores, lo cual
+podría ser un indicio de que el modelo está aprendiendo correctamente.
 
 En la figura \ref{fig-model-dropout01b-256} aunque no son perfectas, el modelo es 
 capaz de capturar más detalles de las imágenes originales.
@@ -315,12 +314,13 @@ capaz de capturar más detalles de las imágenes originales.
 
 \subsection{Modelo con optimizador SGD}
 
-Los resultados obtenidos para el modelo con optimizador SGD se presentan en la
-figura \ref{fig-model-sgd} y vemos que las funciones de pérdida del modelo 
-disminuyen en ambos conjuntos de datos, lo cual podría indicar un buen 
-comportamiento del modelo. Sin embargo, si observamos el eje de loss vemos que 
-los valores son mucho mayores que en los modelos anteriores, lo cual indica que
-el modelo no está aprendiendo correctamente.
+Los resultados para el modelo con optimizador SGD se presentan en el gráfico 
+\ref{fig-model-sgd} a simple vista vemos como las funciones de perdida de 
+ambos conjuntos de datos disminuyen durante todas las épocas, esto podría
+indicar que el modelo está aprendiendo correctamente. Sin embargo, al observar 
+el error de esas curvas (eje loss) vemos que los valores son mucho mayores que
+en los modelos anteriores, lo cual indica que el modelo no está aprendiendo
+correctamente.
 
 Confirmando lo mencionado en el párrafo previo en \ref{fig-model-sgdb}. Se puede 
 observar que el modelo no es capaz de reconstruir la imagen original.
@@ -350,11 +350,10 @@ En esta sección se presentan los resultados obtenidos para el clasificador
 convolucional que reutiliza el encoder del autoencoder previamente entrenado y 
 en este caso se reentrenan todos los parámetros de la red por completo.
 
-En \ref{fig-clasificador-a} se muestran las funciones de perdidas tomando como 
-referencia el encoder del modelo base. Las curvas muestran una disminución en la 
-función de pérdida tanto en el conjunto de entrenamiento como en el de validación 
-a medida que avanzan las épocas con un error relativamente bajo, lo cual indica 
-que el modelo mejora su capacidad de ajuste a los datos.
+En \ref{fig-clasificador-a} se muestran las funciones de perdidas. Las curvas 
+disminuyen tanto en el conjunto de entrenamiento como en el de validación a 
+medida que avanzan las épocas con un error relativamente bajo, lo cual indica 
+que el modelo mejora su capacidad de ajuste al avanzar las épocas.
 \begin{Figura}
   \centering
   \includegraphics[width=0.60\textwidth]{figs1/modelo_con_clasificador_a.png}
@@ -362,7 +361,7 @@ que el modelo mejora su capacidad de ajuste a los datos.
   \label{fig-clasificador-a}
 \end{Figura}
 
-La precisión aumenta constantemente en ambos conjuntos de datos según se muestra 
+La precisión aumenta constantemente en ambos conjuntos de datos según se observa 
 en \ref{fig-clasificador-b}, lo cual indica que el modelo es capaz de clasificar 
 correctamente las imágenes de entrada.
 \begin{Figura}
@@ -373,13 +372,14 @@ correctamente las imágenes de entrada.
 \end{Figura}
 
 Y la matriz de confusión expuesta en \ref{fig-matrix}, muestra un buen desempeño 
-del clasificador. Ya que en la diagonal principal se encuentran los valores más altos, 
-lo cual indica que la mayoría de las predicciones son correctas.
+del clasificador. Ya que en la diagonal principal presenta valores altos 
+basándonos en la escala de colores de la derecha de la figura, indicando que la 
+mayoría de las predicciones son correctas.
 
-Se tiene un buen desempeño en clases como Trouser, Sandal, Sneaker, Bag y Ankle
-Boot. Pero tiene dificultades en distinguir entre las clases Shirt y Coat, 
-ejemplo tomando la fila Shirt se ve que solo acierta 713 veces y 142 veces se 
-equivoca prediciendo T-shirt y 60 como Pullover, algo similar ocurre con Coat, 
+Las clases que más destacan por su desempaño con trouser, sandal, sneaker, bag 
+y ankle boot. Y tiene dificultades en distinguir entre shirt y coat, por ejemplo 
+tomando la fila shirt se ve que solo acierta 713 veces y 142 veces se 
+equivoca prediciendo t-shirt y 60 como pullover, algo similar ocurre con coat, 
 esto se debe a la similitud entre las categorías, ya que todas son prendas de 
 vestir superiores.
 \begin{Figura}
@@ -392,16 +392,15 @@ vestir superiores.
 \subsection{Clasificador solo entrenando la capa clasificadora}
 
 Ahora analizamos los resultados obtenidos para el clasificador convolucional
-reutilizando el encoder del autoencoder previamente entrenado y, en este caso, 
-solo reentrenando los parámetros de la capa clasificadora. Es decir, que 
-tomando como punto de partida el modelo base, solo se reentrenan los parámetros
-de la capa clasificadora y se dejan los parámetros de la capa codificadora tal
-como vienen entrenados del autoencoder convolucional.
+reutilizando el encoder del autoencoder previamente entrenado en el modelo base 
+y, en este caso, solo reentrenando los parámetros de la capa clasificadora. 
+Es decir, que tomando como punto de partida el modelo base, solo se reentrenan 
+los parámetros de la capa clasificadora y se dejan los parámetros de la capa 
+codificadora tal como vienen entrenados del autoencoder convolucional.
 
 En \ref{fig-clasificador-a-a} se muestran las funciones de pérdidas de ambos 
 conjuntos de datos y presentan una disminución bastante pronunciada en ambos casos. 
-El comportamiento es similar al modelo anterior, pero con un error mucho mayor en 
-la función de pérdida.
+El comportamiento es similar al modelo anterior, pero con un error mucho mayor.
 \begin{Figura}
   \centering
   \includegraphics[width=0.60\textwidth]{figs1/modelo_original_entrenando_solo_clasificadora_a.png}
@@ -409,7 +408,7 @@ la función de pérdida.
   \label{fig-clasificador-a-a}
 \end{Figura}
 
-Por otro lado en \ref{fig-clasificador-a-b} el comportamiento de la precisión 
+Por otro lado, en \ref{fig-clasificador-a-b} el comportamiento de la precisión 
 es diferente al modelo anterior, en este caso las curvas aumentan, pero luego se
 estabilizan y comienzan a oscilar.
 \begin{Figura}
@@ -419,12 +418,11 @@ estabilizan y comienzan a oscilar.
   \label{fig-clasificador-a-b}
 \end{Figura}
 
-A fin de comparar el desempeño de ambos clasificadores, se muestra en 
-\ref{fig-matrix-a} la matriz de confusión donde efectivamente se comprueba que 
-el desempeño del clasificador solo reentrenando la capa clasificadora es peor
-que el modelo anterior. Ya que los valores de la diagonal principal son menores
-en todas las categorías, lo cual indica que la mayoría de las predicciones son
-incorrectas.
+Todo esto indica que el modelo podría llegar a tener un desempeño peor que el 
+modelo anterior. A fin de comprobarlo, se muestra en \ref{fig-matrix-a} la 
+matriz de confusión donde efectivamente descubrimos que el desempeño es mucho 
+peor. Ya que los valores de la diagonal principal son menores en todas las 
+categorías, indicando un mayor número de predicciones incorrectas.
 \begin{Figura}
   \centering
   \includegraphics[width=0.80\textwidth]{figs1/matrix_confucion_modelo_original_entrenando_solo_clasificadora.png}
@@ -432,9 +430,8 @@ incorrectas.
   \label{fig-matrix-a}
 \end{Figura}
 
-Entonces podemos concluir que el modelo base donde se reentrenan todos los
-parámetros de la red tiene un mejor desempeño que el modelo donde solo se
-reentrenan los parámetros de la capa clasificadora.
+Entonces concluimos que el modelo donde se reentrenan todos los parámetros de la
+tiene un mejor desempeño.
 
 \section{Conclusiones}
 
@@ -454,9 +451,9 @@ El modelo base mostró un desempeño limitado en la reconstrucción de imágenes
 a pesar de registrar un error relativamente bajo. Al modificar la probabilidad 
 de dropout a $0.1$, no se evidenciaron cambios significativos en su rendimiento. 
 En contraste, al incrementar el número de neuronas en la capa lineal a $256$ 
-con el mismo dropout, se observó una mejora en la calidad de las imágenes 
-reconstruidas. El modelo entrenado con el optimizador SGD presentó un desempeño 
-deficiente, con un error de reconstrucción notablemente alto. 
+con un dropout de $0.1$, se observó una mejora en la calidad de las imágenes 
+reconstruidas. Y el modelo entrenado con el optimizador SGD presentó un desempeño 
+deficiente, con un error de reconstrucción notablemente alto.
 
 Por otro lado, el clasificador convolucional donde se reentrenaron todos los
 parámetros de la red obtuvo buenos resultados, como se refleja en la matriz de 
